@@ -1,0 +1,22 @@
+# Render 部署配置
+services:
+  - type: web
+    name: manxin
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: JWT_SECRET
+        value: manxin-slow-letter-2026
+      - key: ADMIN_KEY
+        value: manxin-admin-2026
+      - key: RECEIVE_WAIT_SEC
+        value: "15"
+      - key: TRANSIT_MINUTES
+        value: "0"
+
+  - type: pg
+    name: manxin-db
+    plan: free
+    databaseName: manxin
+    databaseUser: manxin

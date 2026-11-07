@@ -1,0 +1,21 @@
+node_modules/
+dist/
+dist-web/
+build/
+*.log
+.env
+.env.*
+!.env.example
+.genie/
+.blob/
+backups/
+.DS_Store
+*.tsbuildinfo
+.vite/
+coverage/
+
+# 工作区工具/模板，与应用无关
+.codebuddy/
+.templates/
+docs/
+.cloudstudio
