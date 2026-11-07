@@ -1,5 +1,12 @@
 # 慢信 · Render 部署配置
-# 数据库使用外部 PostgreSQL（Neon 免费版），通过 DATABASE_URL 注入
+# 一体化：Web 服务 + PostgreSQL（免费档），点一次即可完成部署
+databases:
+  - name: manxin-db
+    databaseName: manxin
+    user: manxin
+    plan: free
+    region: singapore
+
 services:
   - type: web
     name: manxin
@@ -9,7 +16,9 @@ services:
     healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: manxin-db
+          property: connectionString
       - key: JWT_SECRET
         generateValue: true
       - key: ADMIN_KEY
