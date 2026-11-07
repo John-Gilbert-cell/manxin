@@ -6,7 +6,21 @@ const connectionString =
   process.env.DATABASE_URL ||
   'postgres://postgres:Tencent2025@localhost:5432/genie?schema=public'
 
-export const pool = new Pool({ connectionString, max: 10 })
+/**
+ * 云数据库（Neon / Render / Supabase / RDS）强制 SSL，本地 Docker 不走 SSL。
+ * 通过连接串特征或 PGSSL=1 判断，避免生产环境握手失败。
+ */
+const needsSsl =
+  process.env.PGSSL === '1' ||
+  /sslmode=require|sslmode=verify|neon\.tech|render\.com|supabase\.(co|com)|amazonaws\.com|azure\.com/.test(
+    connectionString
+  )
+
+export const pool = new Pool({
+  connectionString,
+  max: Number(process.env.PG_POOL_MAX || 10),
+  ssl: needsSsl ? { rejectUnauthorized: false } : undefined,
+})
 
 export async function query<T = any>(text: string, params: any[] = []): Promise<T[]> {
   const res = await pool.query(text, params)
